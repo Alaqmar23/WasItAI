@@ -58,7 +58,7 @@ export default function App() {
     try {
       // Force a minimum scan time of 2.5s to allow animation to complete
       const [response] = await Promise.all([
-        fetch('http://192.168.2.100:8000/predict', {
+        fetch('https://alaqmar-wasitai-backend.hf.space/predict', {
           method: 'POST',
           body: formData,
         }),
@@ -91,7 +91,7 @@ export default function App() {
         formData.append('file', file);
       }
 
-      await fetch('http://192.168.2.100:8000/feedback', {
+      await fetch('https://alaqmar-wasitai-backend.hf.space/feedback', {
         method: 'POST',
         body: formData,
       });
