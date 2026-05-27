@@ -85,7 +85,7 @@ export default function App() {
       formData.append('is_correct', isCorrect);
       formData.append('prediction', result.prediction);
       formData.append('image_id', result.image_id);
-      
+
       // If incorrect, send the original file for verified storage
       if (!isCorrect && file) {
         formData.append('file', file);

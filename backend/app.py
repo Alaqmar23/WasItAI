@@ -4,6 +4,7 @@ import hashlib
 import shutil
 import time
 import requests
+import json
 from datetime import datetime
 from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, Form
@@ -15,20 +16,39 @@ import uvicorn
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", "")
 
 def send_to_discord(prediction, image_id, file_contents, filename):
-    """Sends a notification to Discord with the image for incorrect feedback."""
+    """Sends a notification to Discord with fallback for HF networking issues."""
     if not DISCORD_WEBHOOK_URL:
         return
-    
+
     label = "AI" if prediction == "AUTHENTIC" else "AUTHENTIC"
     payload = {
-        "content": f"🚨 **Feedback Received (Correction Required)**\n**Scan Result:** {prediction}\n**Ground Truth:** {label}\n**Image ID:** {image_id}"
+        "content": f"🚨 **Correction Required**\n**Scan:** {prediction}\n**Actual:** {label}\n**ID:** {image_id}"
     }
-    files = {"file": (filename, file_contents)}
-    
-    try:
-        requests.post(DISCORD_WEBHOOK_URL, data=payload, files=files, timeout=10)
-    except Exception as e:
-        print(f"⚠️ Discord Webhook failed: {e}")
+
+    # Use payload_json for maximum compatibility when sending files
+    files = {
+        "file": (filename, file_contents, "image/jpeg"),
+        "payload_json": (None, json.dumps(payload))
+    }
+
+    # Fallback logic for HF Spaces DNS issues
+    urls_to_try = [
+        DISCORD_WEBHOOK_URL,
+        DISCORD_WEBHOOK_URL.replace("discord.com", "discordapp.com")
+    ]
+
+    for url in urls_to_try:
+        for attempt in range(3):
+            try:
+                r = requests.post(url, files=files, timeout=10)
+                if r.status_code < 400:
+                    print(f"✅ Discord notification sent via {Path(url).name[:10]}...")
+                    return
+                print(f"⚠️ Discord returned {r.status_code}: {r.text}")
+            except Exception as e:
+                if attempt == 2 and url == urls_to_try[-1]:
+                    print(f"❌ Discord Webhook failed after all attempts: {e}")
+                time.sleep(1) # Brief pause before retry
 
 # Directory Setup - Keeping verified and processed folders
 BASE_FEEDBACK_DIR = Path("dataset/feedback")
@@ -62,6 +82,13 @@ def cleanup_old_feedback():
 
 # Run cleanup on startup to manage disk space automatically
 cleanup_old_feedback()
+
+# Configuration Diagnostics
+if DISCORD_WEBHOOK_URL:
+    masked_url = DISCORD_WEBHOOK_URL[:25] + "..." + DISCORD_WEBHOOK_URL[-5:]
+    print(f"✅ Discord Webhook URL detected: {masked_url}")
+else:
+    print("⚠️ WARNING: DISCORD_WEBHOOK_URL not found in environment secrets.")
 
 app = FastAPI(title="AI Image Detector API")
 
