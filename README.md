@@ -1,3 +1,12 @@
+---
+title: WasItAI Backend
+emoji: 🔍
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 WasItAI: AI-Generated Image Detection System
 ============================================
 
@@ -32,18 +41,21 @@ Technology Stack and Dependencies
 
 The project is structured into three main components:
 
-| Tier | Component or Library | Key Purpose |
-| :--- | :--- | :--- |
-| Deep Learning | PyTorch and Torchvision | Core neural network framework and tensor execution |
-| | EfficientNet-V2-S | CNN backbone fine-tuned to extract generative artifacts |
-| | Pillow and NumPy | Image loading, resizing, and array preprocessing |
-| Backend API | FastAPI | Asynchronous API for uploads and user feedback |
-| | Uvicorn | Production-ready web server |
-| | Discord Webhook API | Real-time logging of user corrections |
-| Frontend Client | React.js (React 18) | Single Page Application framework for the user interface |
-| | Vite | Fast build tool and local development server |
-| | Framer Motion | Smooth entry animations and state transitions |
-| | Lucide React | Modern icons for the user interface |
+Deep Learning (Core Neural Infrastructure)
+- PyTorch and Torchvision: Core neural network framework and tensor execution.
+- EfficientNet-V2-S: CNN backbone fine-tuned to extract generative artifacts.
+- Pillow and NumPy: Image loading, resizing, and array preprocessing.
+
+Backend API Service
+- FastAPI: Asynchronous API for uploads and user feedback.
+- Uvicorn: Production-ready ASGI web server.
+- Discord Webhook API: Real-time logging of user corrections.
+
+Frontend Client (User Interface)
+- React.js (React 18): Single Page Application framework for the user interface.
+- Vite: Fast build tool and local development server.
+- Framer Motion: Smooth entry animations and state transitions.
+- Lucide React: Modern icons for the user interface.
 
 --------------------------------------------------------------------------------
 
