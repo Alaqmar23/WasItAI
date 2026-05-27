@@ -10,11 +10,11 @@ System Interface
 
 1. Main Scanning Interface
 The application features a clean, dark-mode glassmorphic user interface where users can drag and drop or upload images for analysis.
-![WasItAI Input Screen](./wasitai_input.png)
+![WasItAI Input Screen](./screenshots/wasitai_input.png)
 
 2. Neural Analysis and Feedback Screen
 After the image is processed, the system displays the prediction along with a calibrated confidence score and a feedback form.
-![WasItAI Output Screen](./wasitai_output.png)
+![WasItAI Output Screen](./screenshots/wasitai_output.png)
 
 --------------------------------------------------------------------------------
 
